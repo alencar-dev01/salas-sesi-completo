@@ -1,5 +1,5 @@
 // js/api.js - Camada de comunicação com o backend
-const API_URL = "https://api-salas-sesi-completo.onrender.com/api";;
+const API_BASE = "https://api-salas-sesi-completo.onrender.com/api";
 
 const api = {
   _token: null,
