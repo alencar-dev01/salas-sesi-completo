@@ -8,6 +8,16 @@ const pageTitles = {
   salas: 'Salas de Informática',
   usuarios: 'Usuários',
   'todas-reservas': 'Todas as Reservas',
+  chamados: 'Central de Chamados', // <-- Rota mapeada
+  impressoras: 'Impressoras',
+  conhecimento: 'Base de Conhecimento',
+  relatorios: 'Relatórios do Sistema',
+  // 'dashboard-executivo': 'Dashboard Executivo',
+  'painel-ocupacao': 'Painel de Ocupação',
+  // 'bloqueios-salas': 'Bloqueios de Salas',
+  'manutencao': 'Manutenção Preventiva',
+  comunicados: 'Comunicados',
+  // auditoria: 'Log de Auditoria'       // <-- Rota mapeada
 };
 
 let currentPage = null;
@@ -39,6 +49,7 @@ function navigate(page) {
   const content = document.getElementById('page-content');
   content.innerHTML = '';
 
+  // O "Guarda de Trânsito" das suas páginas
   switch (page) {
     case 'dashboard': renderDashboard(content); break;
     case 'calendario': renderCalendario(content); break;
@@ -47,6 +58,16 @@ function navigate(page) {
     case 'nova-reserva': renderNovaReserva(content); break;
     case 'salas': renderSalas(content); break;
     case 'usuarios': renderUsuarios(content); break;
+    case 'chamados': renderChamados(content); break;       // <-- Nova rota de chamados
+    case 'impressoras': renderImpressoras(content); break;
+    case 'conhecimento': renderConhecimento(content); break;
+    case 'relatorios': renderRelatorios(content); break;
+    // case 'dashboard-executivo': renderDashboardExecutivo(content); break;
+    case 'painel-ocupacao': renderPainelOcupacao(content); break;
+    // case 'bloqueios-salas': renderBloqueios(content); break;
+    case 'manutencao': renderManutencao(content); break;
+    case 'comunicados': renderComunicados(content); break;
+    // case 'auditoria': renderAuditoria(content); break;
     default:
       content.innerHTML = '<div class="empty-state"><p>Página não encontrada.</p></div>';
   }
