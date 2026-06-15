@@ -126,3 +126,4 @@ function renderMiniCalendar(container) {
   html += `</div>`;
   container.innerHTML = html;
 }
+
