@@ -157,7 +157,7 @@ async function resCarregar(page) {
     `).join('');
 
     const pag = document.getElementById('res-pagination');
-    if (pag) renderPagination(pag, resState.page, resState.paginas, resCarregar);
+    if (pag) renderPagination(pag, resState.page, resState.paginas, 'resCarregar');
 
   } catch (err) {
     if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="color:var(--erro);padding:20px;">${err.erro || 'Erro ao carregar reservas.'}</td></tr>`;
