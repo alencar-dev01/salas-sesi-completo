@@ -11,7 +11,7 @@ const pageTitles = {
   'usuarios':         'Usuários',
   'chamados':         'Central de Chamados',
   'impressoras':      'Impressoras',
-  'conhecimento':     'Base de Conhecimento',
+  // 'conhecimento':     'Base de Conhecimento',
   'relatorios':       'Relatórios',
   'auditoria':        'Log de Auditoria',
   'comunicados':      'Comunicados',
@@ -56,7 +56,7 @@ function navigate(page) {
     case 'usuarios':         renderUsuarios(content); break;
     case 'chamados':         renderChamados(content); break;
     case 'impressoras':      renderImpressoras(content); break;
-    case 'conhecimento':     renderConhecimento(content); break;
+    // case 'conhecimento':     renderConhecimento(content); break;
     case 'relatorios':       renderRelatorios(content); break;
     case 'auditoria':        renderAuditoria(content); break;
     case 'comunicados':      renderComunicados(content); break;
