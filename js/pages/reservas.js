@@ -68,7 +68,7 @@ function renderReservas(container, allMode) {
           </tbody>
         </table>
       </div>
-      <div id="res-pagination" style="padding:0 16px;"></div>
+      <div id="res-pagination" style="padding: 16px; display: flex; gap: 8px; align-items: center; justify-content: flex-start;"></div>
     </div>
   `;
 
