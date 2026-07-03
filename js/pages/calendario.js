@@ -31,8 +31,8 @@ async function renderCalendario(container) {
           <div class="calendar-title" id="cal-title">—</div>
           <div class="calendar-view-tabs" style="margin-top:8px;">
             <button class="calendar-view-tab active" onclick="calSetView('mensal')">Mês</button>
-            <button class="calendar-view-tab" onclick="calSetView('semanal')">Semana</button>
-            <button class="calendar-view-tab" onclick="calSetView('diario')">Dia</button>
+            // <button class="calendar-view-tab" onclick="calSetView('semanal')">Semana</button>
+            // <button class="calendar-view-tab" onclick="calSetView('diario')">Dia</button>
           </div>
         </div>
         <button class="calendar-nav-btn" id="cal-next" onclick="calNav(1)">Próximo ›</button>

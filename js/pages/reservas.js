@@ -144,7 +144,14 @@ async function resCarregar(page) {
             <button class="btn btn-outline btn-sm btn-icon" title="Ver detalhes" onclick="resVer(${r.id})">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
-            ${r.status !== 'cancelada' ? `
+            
+            ${(r.status === 'confirmada' || r.status === 'pendente') ? `
+            <button class="btn btn-outline btn-sm btn-icon" title="Finalizar Reserva" onclick="resFinalizar(${r.id})">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+            </button>
+            ` : ''}
+
+            ${r.status !== 'cancelada' && r.status !== 'finalizada' ? `
             <button class="btn btn-outline btn-sm btn-icon" title="Editar" onclick="resEditar(${r.id})">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
@@ -428,5 +435,17 @@ async function resSalvar() {
   } finally {
     btn.disabled = false;
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Confirmar Reserva`;
+  }
+}
+
+async function resFinalizar(id) {
+  if (!confirm('Tem certeza que deseja marcar esta reserva como finalizada?')) return;
+  try {
+    // Usa a sua API existente para atualizar apenas o campo status
+    await api.atualizarReserva(id, { status: 'finalizada' });
+    showToast('Reserva finalizada!', 'A reserva foi marcada como concluída.', 'success');
+    resCarregar(); // Recarrega a tabela para atualizar a cor da badge
+  } catch(e) { 
+    showToast('Erro', e.erro || 'Erro ao finalizar a reserva.', 'error'); 
   }
 }
