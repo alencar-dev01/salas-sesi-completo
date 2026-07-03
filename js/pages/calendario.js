@@ -9,6 +9,61 @@ let calState = {
   filtroSala: ''
 };
 
+// async function renderCalendario(container) {
+//   container.innerHTML = `
+//     <div class="card" style="margin-bottom:16px;padding:12px 16px;">
+//       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+//         <label style="font-size:12px;font-weight:600;color:var(--texto-leve);">Filtrar sala:</label>
+//         <select id="cal-filtro-sala" class="form-control" style="width:auto;min-width:160px;" onchange="calFiltroSala()">
+//           <option value="">Todas as salas</option>
+//         </select>
+//         <div style="margin-left:auto;display:flex;gap:8px;">
+//           <span style="display:flex;align-items:center;gap:5px;font-size:11px;"><span class="color-dot" style="background:#8DC63F;"></span>Confirmada</span>
+//           <span style="display:flex;align-items:center;gap:5px;font-size:11px;"><span class="color-dot" style="background:#F36F21;"></span>Pendente</span>
+//           <span style="display:flex;align-items:center;gap:5px;font-size:11px;"><span class="color-dot" style="background:#DC3545;"></span>Cancelada</span>
+//         </div>
+//       </div>
+//     </div>
+//     <div class="calendar-wrapper" id="cal-wrapper">
+//       <div class="calendar-header">
+//         <button class="calendar-nav-btn" id="cal-prev" onclick="calNav(-1)">‹ Anterior</button>
+//         <div style="text-align:center;">
+//           <div class="calendar-title" id="cal-title">—</div>
+//           <div class="calendar-view-tabs" style="margin-top:8px;">
+//             <button class="calendar-view-tab active" onclick="calSetView('mensal')">Mês</button>
+//             <button class="calendar-view-tab" onclick="calSetView('semanal')">Semana</button>
+//             <button class="calendar-view-tab" onclick="calSetView('diario')">Dia</button>
+//           </div>
+//         </div>
+//         <button class="calendar-nav-btn" id="cal-next" onclick="calNav(1)">Próximo ›</button>
+//       </div>
+//       <div class="calendar-grid" id="cal-body">
+//         <div style="padding:32px;text-align:center;color:var(--texto-leve);">Carregando...</div>
+//       </div>
+//     </div>
+//   `;
+
+//   // Carrega salas
+//   try {
+//     const s = await api.getSalas({ status: 'ativa', limit: 100 });
+//     calState.salas = s.dados;
+//     const sel = document.getElementById('cal-filtro-sala');
+//     s.dados.forEach(sala => {
+//       sel.innerHTML += `<option value="${sala.id}">${sala.nome}</option>`;
+//     });
+//   } catch(e) {}
+
+//   if (!calState.weekStart) {
+//     const now = new Date();
+//     const day = now.getDay();
+//     calState.weekStart = new Date(now);
+//     calState.weekStart.setDate(now.getDate() - day);
+//   }
+
+//   await calCarregarReservas();
+//   calRender();
+// }
+
 async function renderCalendario(container) {
   container.innerHTML = `
     <div class="card" style="margin-bottom:16px;padding:12px 16px;">
@@ -31,14 +86,23 @@ async function renderCalendario(container) {
           <div class="calendar-title" id="cal-title">—</div>
           <div class="calendar-view-tabs" style="margin-top:8px;">
             <button class="calendar-view-tab active" onclick="calSetView('mensal')">Mês</button>
-            // <button class="calendar-view-tab" onclick="calSetView('semanal')">Semana</button>
-            // <button class="calendar-view-tab" onclick="calSetView('diario')">Dia</button>
+            <button class="calendar-view-tab" onclick="calSetView('semanal')">Semana</button>
+            <button class="calendar-view-tab" onclick="calSetView('diario')">Dia</button>
           </div>
         </div>
         <button class="calendar-nav-btn" id="cal-next" onclick="calNav(1)">Próximo ›</button>
       </div>
       <div class="calendar-grid" id="cal-body">
         <div style="padding:32px;text-align:center;color:var(--texto-leve);">Carregando...</div>
+      </div>
+    </div>
+
+    <div id="cal-box-dia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+      <div class="card" style="width: 90%; max-width: 500px; padding: 20px; position: relative; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeIn 0.2s ease;">
+        <button onclick="document.getElementById('cal-box-dia').style.display='none'" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 22px; cursor: pointer; color: var(--texto-leve);">&times;</button>
+        <h3 id="cal-box-dia-titulo" style="margin-top: 0; margin-bottom: 15px; font-size: 16px; font-weight: 700; color: var(--azul-principal);">Reservas do Dia</h3>
+        <div id="cal-box-dia-conteudo" style="max-height: 380px; overflow-y: auto; padding-right: 5px;">
+          </div>
       </div>
     </div>
   `;
@@ -276,9 +340,53 @@ function calRenderDiario(body) {
   body.innerHTML = html || '<div class="empty-state"><p>Nenhuma reserva neste dia.</p></div>';
 }
 
+// function calDayClick(dateStr) {
+//   calState.weekStart = new Date(dateStr + 'T12:00:00');
+//   calSetView('diario');
+// }
+
 function calDayClick(dateStr) {
-  calState.weekStart = new Date(dateStr + 'T12:00:00');
-  calSetView('diario');
+  // 1. Filtra as reservas que pertencem exatamente ao dia clicado
+  const reservasDoDia = calState.reservas.filter(r => r.data === dateStr);
+  
+  // 2. Formata a data para exibir no título da Box (YYYY-MM-DD -> DD/MM/YYYY)
+  const [ano, mes, dia] = dateStr.split('-');
+  document.getElementById('cal-box-dia-titulo').innerHTML = `📅 Reservas do Dia <strong>${dia}/${mes}/${ano}</strong>`;
+  
+  const conteudo = document.getElementById('cal-box-dia-conteudo');
+  
+  // 3. Se não houver reservas, exibe mensagem amigável
+  if (reservasDoDia.length === 0) {
+    conteudo.innerHTML = `
+      <div style="text-align: center; color: var(--texto-leve); padding: 30px 10px; font-size: 13px;">
+        Nenhuma reserva registrada para este dia.
+      </div>`;
+  } else {
+    // Mapeamento de cores baseado no status
+    const colorMap = { confirmada: '#8DC63F', pendente: '#F36F21', cancelada: '#DC3545' };
+    
+    // 4. Monta o HTML dos cartões de reserva
+    conteudo.innerHTML = reservasDoDia.map(r => `
+      <div style="background: #f8f9fa; border-left: 5px solid ${colorMap[r.status] || '#8DC63F'}; border-radius: 6px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+          <span style="font-weight: 700; font-size: 13px; color: var(--texto); display: block; max-width: 75%;">${r.titulo}</span>
+          <span style="font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: ${colorMap[r.status]}20; color: ${colorMap[r.status]}; text-transform: uppercase;">
+            ${r.status}
+          </span>
+        </div>
+        
+        <div style="font-size: 11px; color: var(--texto-leve); margin-top: 6px; line-height: 1.5;">
+          <strong>Sala:</strong> ${r.sala?.nome || '—'} <br>
+          <strong>Horário:</strong> ${r.horaInicio.slice(0,5)} às ${r.horaFim.slice(0,5)} <br>
+          <strong>Responsável:</strong> ${r.responsavel || r.usuario?.nome || '—'}
+          ${r.turma ? `<br><strong>Turma:</strong> ${r.turma}` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  // 5. Faz a box "surgir" na tela mudando o display de 'none' para 'flex'
+  document.getElementById('cal-box-dia').style.display = 'flex';
 }
 
 function calNovaReservaDia(data, hora) {
