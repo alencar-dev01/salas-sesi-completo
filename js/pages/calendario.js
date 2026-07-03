@@ -64,6 +64,10 @@ let calState = {
 //   calRender();
 // }
 
+//semanl e diario
+{/* <button class="calendar-view-tab" onclick="calSetView('semanal')">Semana</button>
+<button class="calendar-view-tab" onclick="calSetView('diario')">Dia</button> */}
+
 async function renderCalendario(container) {
   container.innerHTML = `
     <div class="card" style="margin-bottom:16px;padding:12px 16px;">
@@ -86,8 +90,6 @@ async function renderCalendario(container) {
           <div class="calendar-title" id="cal-title">—</div>
           <div class="calendar-view-tabs" style="margin-top:8px;">
             <button class="calendar-view-tab active" onclick="calSetView('mensal')">Mês</button>
-            <button class="calendar-view-tab" onclick="calSetView('semanal')">Semana</button>
-            <button class="calendar-view-tab" onclick="calSetView('diario')">Dia</button>
           </div>
         </div>
         <button class="calendar-nav-btn" id="cal-next" onclick="calNav(1)">Próximo ›</button>
