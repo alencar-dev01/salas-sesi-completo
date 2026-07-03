@@ -51,6 +51,7 @@ const api = {
   criarReserva(d) { return this.post('/reservas', d); },
   atualizarReserva(id, d) { return this.put('/reservas/' + id, d); },
   cancelarReserva(id) { return this.delete('/reservas/' + id); },
+  deletarReserva(id) { return this.delete('/reservas/' + id); },
 
   // Calendário
   getCalendario(params = {}) { return this.get('/reservas/calendario?' + new URLSearchParams(params)); },

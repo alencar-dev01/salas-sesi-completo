@@ -131,7 +131,7 @@ async function resCarregar(page) {
       return;
     }
 
-    tbody.innerHTML = data.dados.map(r => `
+   tbody.innerHTML = data.dados.map(r => `
       <tr>
         <td><span style="font-weight:600;">${r.titulo}</span>${r.turma ? `<br><span style="font-size:11px;color:var(--texto-leve);">Turma: ${r.turma}</span>` : ''}</td>
         <td><span style="font-size:13px;">${r.sala?.nome || '—'}</span></td>
@@ -151,13 +151,24 @@ async function resCarregar(page) {
             </button>
             ` : ''}
 
-            ${r.status !== 'cancelada' && r.status !== 'finalizada' ? `
+            ${(r.status !== 'cancelada' && r.status !== 'finalizada') ? `
             <button class="btn btn-outline btn-sm btn-icon" title="Editar" onclick="resEditar(${r.id})">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
             <button class="btn btn-danger btn-sm btn-icon" title="Cancelar" onclick="resCancelar(${r.id})">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             </button>` : ''}
+
+            ${r.status === 'finalizada' ? `
+            <button class="btn btn-danger btn-sm btn-icon" title="Excluir Permanentemente" onclick="resExcluir(${r.id})">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
+            ` : ''}
           </div>
         </td>
       </tr>
@@ -524,5 +535,17 @@ async function resFinalizar(id) {
     resCarregar(); // Recarrega a tabela para atualizar a cor da badge
   } catch(e) { 
     showToast('Erro', e.erro || 'Erro ao finalizar a reserva.', 'error'); 
+  }
+}
+
+async function resExcluir(id) {
+  if (!confirm('Tem certeza que deseja excluir PERMANENTEMENTE esta reserva? Esta ação não pode ser desfeita.')) return;
+
+  try {
+    await api.deletarReserva(id); 
+    showToast('Reserva excluída!', 'A reserva foi apagada permanentemente do sistema.', 'success');
+    resCarregar(); // Recarrega a tabela
+  } catch(e) {
+    showToast('Erro', e.erro || 'Erro ao excluir a reserva.', 'error');
   }
 }
