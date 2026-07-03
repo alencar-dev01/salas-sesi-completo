@@ -198,6 +198,72 @@ async function resVer(id) {
   } catch(e) { showToast('Erro', e.erro||'Erro ao carregar.', 'error'); }
 }
 
+// async function resEditar(id) {
+//   try {
+//     const r = await api.getReserva(id);
+//     const salas = await api.getSalas({ status: 'ativa', limit: 100 });
+//     const salaOpts = salas.dados.map(s => `<option value="${s.id}" ${s.id==r.salaId?'selected':''}>${s.nome}</option>`).join('');
+
+//     createModal({
+//       id: 'modal-edit-res',
+//       title: 'Editar Reserva',
+//       size: 'modal-lg',
+//       body: `
+//         <div class="form-row form-row-2">
+//           <div class="form-group"><label class="form-label">Título *</label><input id="eres-titulo" class="form-control" value="${r.titulo}"></div>
+//           <div class="form-group"><label class="form-label">Sala *</label><select id="eres-sala" class="form-control">${salaOpts}</select></div>
+//           <div class="form-group"><label class="form-label">Data *</label><input id="eres-data" type="date" class="form-control" value="${r.data}"></div>
+//           <div class="form-row form-row-2">
+//             <div class="form-group"><label class="form-label">Início *</label><input id="eres-inicio" type="time" class="form-control" value="${r.horaInicio}"></div>
+//             <div class="form-group"><label class="form-label">Fim *</label><input id="eres-fim" type="time" class="form-control" value="${r.horaFim}"></div>
+//           </div>
+//           <div class="form-group"><label class="form-label">Responsável</label><input id="eres-resp" class="form-control" value="${r.responsavel||''}"></div>
+//           <div class="form-group"><label class="form-label">Turma</label><input id="eres-turma" class="form-control" value="${r.turma||''}"></div>
+//         </div>
+//         <div class="form-group"><label class="form-label">Descrição</label><textarea id="eres-desc" class="form-control" rows="2">${r.descricao||''}</textarea></div>
+//         <div class="form-group"><label class="form-label">Observações</label><textarea id="eres-obs" class="form-control" rows="2">${r.observacoes||''}</textarea></div>
+//         <div id="eres-err" class="hidden" style="color:var(--erro);font-size:13px;padding:8px;background:rgba(220,53,69,.08);border-radius:6px;"></div>
+//       `,
+//       footer: `
+//         <button class="btn btn-outline" onclick="closeModal('modal-edit-res')">Cancelar</button>
+//         <button class="btn btn-primary" id="eres-save-btn" onclick="resSalvarEdicao(${id})">Salvar alterações</button>
+//       `
+//     });
+//     openModal('modal-edit-res');
+//   } catch(e) { showToast('Erro', e.erro||'Erro ao carregar.', 'error'); }
+// }
+
+// async function resSalvarEdicao(id) {
+//   const btn = document.getElementById('eres-save-btn');
+//   const err = document.getElementById('eres-err');
+//   err.classList.add('hidden');
+//   btn.disabled = true; btn.textContent = 'Salvando...';
+
+//   const dados = {
+//     titulo: document.getElementById('eres-titulo')?.value,
+//     salaId: document.getElementById('eres-sala')?.value,
+//     data: document.getElementById('eres-data')?.value,
+//     horaInicio: document.getElementById('eres-inicio')?.value,
+//     horaFim: document.getElementById('eres-fim')?.value,
+//     responsavel: document.getElementById('eres-resp')?.value,
+//     turma: document.getElementById('eres-turma')?.value,
+//     descricao: document.getElementById('eres-desc')?.value,
+//     observacoes: document.getElementById('eres-obs')?.value,
+//   };
+
+//   try {
+//     await api.atualizarReserva(id, dados);
+//     closeModal('modal-edit-res');
+//     showToast('Reserva atualizada!', '', 'success');
+//     resCarregar();
+//   } catch(e) {
+//     err.textContent = e.erro || 'Erro ao salvar.';
+//     err.classList.remove('hidden');
+//   } finally {
+//     btn.disabled = false; btn.textContent = 'Salvar alterações';
+//   }
+// }
+
 async function resEditar(id) {
   try {
     const r = await api.getReserva(id);
@@ -219,6 +285,16 @@ async function resEditar(id) {
           </div>
           <div class="form-group"><label class="form-label">Responsável</label><input id="eres-resp" class="form-control" value="${r.responsavel||''}"></div>
           <div class="form-group"><label class="form-label">Turma</label><input id="eres-turma" class="form-control" value="${r.turma||''}"></div>
+          
+          <div class="form-group">
+            <label class="form-label">Status *</label>
+            <select id="eres-status" class="form-control">
+              <option value="pendente" ${r.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+              <option value="confirmada" ${r.status === 'confirmada' ? 'selected' : ''}>Confirmada</option>
+              <option value="finalizada" ${r.status === 'finalizada' ? 'selected' : ''}>Finalizada</option>
+              <option value="cancelada" ${r.status === 'cancelada' ? 'selected' : ''}>Cancelada</option>
+            </select>
+          </div>
         </div>
         <div class="form-group"><label class="form-label">Descrição</label><textarea id="eres-desc" class="form-control" rows="2">${r.descricao||''}</textarea></div>
         <div class="form-group"><label class="form-label">Observações</label><textarea id="eres-obs" class="form-control" rows="2">${r.observacoes||''}</textarea></div>
@@ -247,6 +323,7 @@ async function resSalvarEdicao(id) {
     horaFim: document.getElementById('eres-fim')?.value,
     responsavel: document.getElementById('eres-resp')?.value,
     turma: document.getElementById('eres-turma')?.value,
+    status: document.getElementById('eres-status')?.value, // <-- STATUS ADICIONADO AO ENVIO
     descricao: document.getElementById('eres-desc')?.value,
     observacoes: document.getElementById('eres-obs')?.value,
   };
