@@ -1,6 +1,6 @@
 // js/api.js - Camada de comunicação com o backend
-const API_BASE = "https://api-salas-sesi-completo.onrender.com/api";
-// const API_BASE = "http://localhost:3000/api";
+// const API_BASE = "https://api-salas-sesi-completo.onrender.com/api";
+const API_BASE = "http://localhost:3000/api";
 
 const api = {
   _token: null,
@@ -55,4 +55,6 @@ const api = {
 
   // Calendário
   getCalendario(params = {}) { return this.get('/reservas/calendario?' + new URLSearchParams(params)); },
+
+  getPortaria() { return this.get('/reservas/publico/portaria'); }
 };
