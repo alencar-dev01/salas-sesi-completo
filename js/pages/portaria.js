@@ -8,7 +8,7 @@ async function renderPortaria(container) {
     <div style="padding: 20px; max-width: 1000px; margin: 0 auto;">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
         <div>
-          <h2 style="margin:0; color: var(--azul-principal); font-weight: 800;">📋 Painel da Portaria</h2>
+          <h2 style="margin:0; color: var(--azul-principal); font-weight: 800;">Painel da Disciplina</h2>
           <p style="margin:5px 0 0; color: var(--texto-leve); font-size: 13px;">Agendamentos confirmados para o dia de hoje</p>
         </div>
         <div style="background: var(--azul-principal); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 14px;">
